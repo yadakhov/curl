@@ -26,11 +26,12 @@ class Curl
      * Perform a GET request.
      *
      * @param $url
-     * @param $params
+     * @param array|null $params
+     * @param array|null $headers
      *
      * @return mixed
      */
-    public function get($url, array $params = [])
+    public function get($url, array $params = null, array $headers = null)
     {
         $ch = curl_init();
         if (!empty($params)) {
@@ -43,6 +44,10 @@ class Curl
         curl_setopt($ch, CURLOPT_USERAGENT, $this->userAgent);
         curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
 
+        if (!empty($headers)) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        }
+
         $response = curl_exec($ch);
         curl_close($ch);
 
@@ -53,11 +58,12 @@ class Curl
      * Perform a POST request.
      *
      * @param $url
-     * @param $params
+     * @param array|null $params
+     * @param array|null $headers
      *
      * @return mixed
      */
-    public function post($url, array $params = [])
+    public function post($url, array $params = null, array $headers = null)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -69,6 +75,9 @@ class Curl
         curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
         if (!empty($params)) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+        }
+        if (!empty($headers)) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         }
 
         $response = curl_exec($ch);
