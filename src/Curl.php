@@ -58,12 +58,12 @@ class Curl
      * Perform a POST request.
      *
      * @param $url
-     * @param array|null $params
+     * @param array|string|null $params
      * @param array|null $headers
      *
      * @return mixed
      */
-    public function post($url, array $params = null, array $headers = null)
+    public function post($url, $params = null, array $headers = null)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -74,7 +74,11 @@ class Curl
         curl_setopt($ch, CURLOPT_USERAGENT, $this->userAgent);
         curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
         if (!empty($params)) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+            if (is_array($params)) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+            } else {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+            }
         }
         if (!empty($headers)) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
